@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <section>
+        <h1>CRUD Operations</h1>
+        <input type="text" id="name-ip" placeholder="Enter name">
+        <input id="email-ip" placeholder="Enter email">
+        <button onclick="addTask()">Add</button>
+        <table id="TB">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                    </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </section>
+    <script>
+        let currentId = 1;
+        
+        function addTask() {
+            let name = document.getElementById('name-ip').value.trim();
+            let email = document.getElementById('email-ip').value.trim();
+            if (!name || !email) {
+                alert('Please enter name and email');
+                return;
+            }
+            const table = document.getElementById('tableBody');
+            const row = document.createElement('tr');
+            row.setAttribute("data-id", currentId);
+            
+            row.innerHTML = `
+                <td>${currentId}</td>
+                <td>${name}</td>
+                <td>${email}</td>
+                <td>
+                    <button onclick="editEntry(this)" style="background-color:red">Edit</button>
+                    <button onclick="deleteTask(this)" style="background-color:green">Delete</button>
+                </td>
+            `;
+            table.appendChild(row);
+            document.getElementById("name-ip").value = "";
+            document.getElementById("email-ip").value = "";
+            currentId++;
+        }
+        
+        function deleteTask(button) {
+            const row = button.closest("tr");
+            row.remove();
+        }
+        
+        function editEntry(button) {
+            const row = button.closest("tr");
+            const nameCell = row.children[1];
+            const emailCell = row.children[2];
+            const actionButton = button;
+
+            if(actionButton.textContent === "Edit") {
+                const currentName = nameCell.textContent;
+                const currentEmail = emailCell.textContent;
+
+                nameCell.innerHTML = `<input type="text" value="${nameCell.textContent}" id="editNameInput">`;
+                emailCell.innerHTML = `<input type="text" value="${emailCell.textContent}" id="editEmailInput">`;
+                actionButton.textContent = "Save";
+            }else{
+                const editedName = document.getElementById('editNameInput').value;
+                const editedEmail = document.getElementById('editEmailInput').value;
+                
+
+                if (!editedName || !editedEmail) {
+                    alert("Both fields are required.");
+                    return;
+                }
+
+                nameCell.textContent = editedName;
+                emailCell.textContent = editedEmail;
+
+                actionButton.textContent = "Edit";
+            }
+        }
+    </script>
+</body>
+</html>
